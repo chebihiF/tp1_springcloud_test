@@ -3,6 +3,7 @@ package com.suptech.customerservice.services;
 import com.suptech.customerservice.dto.CustomerRequestDTO;
 import com.suptech.customerservice.dto.CustomerResponseDTO;
 import com.suptech.customerservice.entities.Customer;
+import com.suptech.customerservice.mappers.CustomerMapper;
 import com.suptech.customerservice.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,43 +15,38 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CustomerMapper customerMapper;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
+        this.customerMapper = customerMapper;
     }
 
     @Override
     public CustomerResponseDTO save(CustomerRequestDTO customerRequestDTO) {
-        /*
-            Mapping Objet Objet
-         */
-        Customer customer = new Customer();
-        customer.setId(customerRequestDTO.getId());
-        customer.setName(customerRequestDTO.getName());
-        customer.setEmail(customerRequestDTO.getEmail());
+
+
+
+
+        Customer customer = customerMapper.customerRequestDTOtoCustomer(customerRequestDTO);
 
         Customer savedCustomer = customerRepository.save(customer);
 
-        /*
-            Mapping Objet Objet
-         */
-
-        CustomerResponseDTO customerResponseDTO = new CustomerResponseDTO();
-        customerResponseDTO.setId(customer.getId());
-        customerResponseDTO.setName(customer.getName());
-        customerResponseDTO.setEmail(customer.getEmail());
+        CustomerResponseDTO customerResponseDTO = customerMapper.customerToCustomerResponseDTO(savedCustomer);
 
         return customerResponseDTO;
     }
 
     @Override
     public CustomerResponseDTO getCustomer(Long id) {
-        return null;
+        Customer customer = customerRepository.findById(id).get();
+        return customerMapper.customerToCustomerResponseDTO(customer);
     }
 
     @Override
     public CustomerResponseDTO update(CustomerRequestDTO customerRequestDTO) {
-        return null;
+        Customer customer = customerMapper.customerRequestDTOtoCustomer(customerRequestDTO);
+        return customerMapper.customerToCustomerResponseDTO(customer);
     }
 
     @Override
