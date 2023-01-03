@@ -40,7 +40,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerResponseDTO update(CustomerRequestDTO customerRequestDTO) {
         Customer customer = customerMapper.customerRequestDTOtoCustomer(customerRequestDTO);
-        return customerMapper.customerToCustomerResponseDTO(customer);
+        Customer updatedCustomer = customerRepository.save(customer);
+        return customerMapper.customerToCustomerResponseDTO(updatedCustomer);
     }
 
     @Override
